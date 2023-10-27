@@ -12,15 +12,14 @@ function App() {
   const [page, setPage] = useState(1);
 
   const onSearchSubmit = async (value) => {
-    if (value === query && page !== 1) {
-      setImagesList([]);
-      setPage(1);
-      return;
-    }
+    setImagesList([]);
+    setPage(1);
     setQuery(value);
   };
 
   const onSearchInputChange = (value) => {
+    setImagesList([]);
+    setPage(1);
     setQuery(value);
   };
 
@@ -43,8 +42,9 @@ function App() {
         query,
         page,
       });
-      setImagesList((prev) => [...prev, [...response.results]]);
       setIsLoading(false);
+      if (response.results.length === 0 || response.total === 0) return;
+      setImagesList((prev) => [...prev, [...response.results]]);
     };
 
     const debounce = setTimeout(() => getImages(), 1000);
@@ -97,7 +97,7 @@ function App() {
         <div className="flex-1 flex flex-col gap-4">
           {renderContent()}
           {query && isLoading && (
-            <Loading className="flex justify-center items-center " />
+            <Loading className="flex justify-center items-center" />
           )}
         </div>
       </div>
